@@ -129,7 +129,9 @@ class Attribute:
         self.value = int(value).to_bytes(len(self.value), "little")
 
     def encode(self) -> bytes:
-        name = self.name.encode("ascii").ljust(NAME_FIELD_SIZE, b"\x00")
+        # latin-1, not ascii: names are decoded with _decode_name (latin-1), so a name byte >= 0x80
+        # must re-encode 1:1 instead of raising and breaking the byte-exact round-trip.
+        name = self.name.encode("latin-1").ljust(NAME_FIELD_SIZE, b"\x00")
         if len(name) != NAME_FIELD_SIZE:
             raise HmiFormatError(f"attribute name too long: {self.name}")
         return struct.pack("<I", self.record_length) + name + self.value
