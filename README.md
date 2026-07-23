@@ -58,7 +58,7 @@ Install and calibration notes are in [`SETUP.md`](SETUP.md). The test suite is s
 
 ## The shape of an `.HMI` in one picture
 
-```
+```text
 offset 0x000000  ┌───────────────────────────────────────────────┐
                  │ u32 section_count                             │
                  │ section_count × 28-byte directory records     │  <- the only thing near the start

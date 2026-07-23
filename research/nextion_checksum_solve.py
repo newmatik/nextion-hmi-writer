@@ -100,7 +100,9 @@ class ChecksumModel:
             # Length differs -> re-anchor via the shared trailing distance.
             return self._checksum_any_length(payload)
         ck = self.base_checksum
-        for i in range(len(payload)):
+        # Start at 4: bytes 0..3 are the section's own checksum field and are not part of the
+        # payload. They differ between every variant, so injecting them would corrupt the result.
+        for i in range(4, len(payload)):
             d = payload[i] ^ self.base_payload[i]
             if not d:
                 continue
@@ -115,7 +117,7 @@ class ChecksumModel:
         # base_checksum applies to base_payload; for other lengths reconstruct the constant
         # via the known injection.
         zero_ck = self.base_checksum
-        for i in range(len(self.base_payload)):
+        for i in range(4, len(self.base_payload)):
             b = self.base_payload[i]
             if not b:
                 continue
@@ -124,7 +126,7 @@ class ChecksumModel:
                 if (b >> bit) & 1:
                     zero_ck ^= self._advance(self.inject0[bit], steps)
         ck = zero_ck
-        for i in range(len(payload)):
+        for i in range(4, len(payload)):
             b = payload[i]
             if not b:
                 continue
@@ -146,7 +148,8 @@ class ChecksumModel:
 
 
 def _page_payloads(path: Path) -> dict[str, bytes]:
-    """Returns, per active section, the payload from byte 4 on (without the checksum field)."""
+    """Returns, per active section, the whole section bytes (the leading 4-byte checksum field
+    included). ``ChecksumModel`` indexes absolute offsets and skips bytes 0..3 itself."""
 
     raw = path.read_bytes()
     count = struct.unpack_from("<I", raw, 0)[0]

@@ -70,7 +70,7 @@ different model.
   `ks_c_5601-1987`, `shift-jis`, `koi8-r`, `windows-874/1255/1256/1257/1258`, `utf-8`.
 
   **`windows-1252` is absent.** `iso-8859-1` covers `° · ÄÖÜäöüß` and Western-European languages, but
-  not `– — … ‹ › „ "` and not `← ○ ●`.
+  not `– — … ‹ › „ ”` and not `← ○ ●`.
 
   **ISO-8859-1 vs UTF-8:** ISO-8859-1 is one byte per character and small fonts, enough when Polish,
   Czech, Turkish, Greek and Cyrillic are not needed. UTF-8 covers those and typographic punctuation

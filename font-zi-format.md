@@ -32,7 +32,7 @@ Reading this header back is the cheapest way to confirm a font is what you think
 
 ## 2. Worked example — the embedded UTF-8 font (`0.zi`, 665,416 bytes)
 
-```
+```text
 0000  04 FF 00 0A 18 01 00 10 FF FF 00 FF 00 00 01 00   ................
 0010  06 0A 00 00 1C 27 0A 00 2C 00 00 00 FF 00 01 01   .....'..,.......
 0020  05 01 00 00 80 01 00 00 00 00 00 00 73 65 67 31   ............seg1

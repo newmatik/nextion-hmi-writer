@@ -27,6 +27,8 @@ def page_len(path: Path):
             d = f.read(8192)
     except (PermissionError, FileNotFoundError, OSError):
         return None
+    if len(d) < 4:
+        return None
     n = struct.unpack_from("<I", d, 0)[0]
     for i in range(min(n, 64)):
         o = 4 + i * 28

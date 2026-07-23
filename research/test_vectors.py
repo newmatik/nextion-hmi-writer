@@ -50,7 +50,7 @@ def _vectors() -> list[dict[str, object]]:
         following = NEXT_HEADING.search(tail)
         if following is not None:
             tail = tail[: following.start()]
-        block = re.search(r"```\n(?P<hex>[0-9a-fA-F\s]+?)\n```", tail)
+        block = re.search(r"```\w*\n(?P<hex>[0-9a-fA-F\s]+?)\n```", tail)
         if block is None:
             raise AssertionError(f"no hex block below vector {match.group('name')!r}")
         section = bytes.fromhex("".join(block.group("hex").split()))

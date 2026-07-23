@@ -38,9 +38,11 @@ setup and calibration notes.
 `nextion_hmi_binary.py` and `nextion_hmi_checksum.py` are the **canonical** copies. A consuming product may vendor a pinned copy; if it does, that
 copy and this one must be diffed whenever either changes.
 
-`test_vectors.py` verifies them against every vector in [`../test-vectors.md`](../test-vectors.md) —
-parsed out of the document itself, so the reference and the implementation cannot drift apart. It is
-stdlib-only and needs no `.HMI` files:
+`test_vectors.py` verifies `nextion_hmi_checksum.py` against every vector in
+[`../test-vectors.md`](../test-vectors.md) — parsed out of the document itself, so the reference and
+the implementation cannot drift apart. It is stdlib-only and needs no `.HMI` files
+(`nextion_hmi_binary.py` is instead proven by its byte-exact round-trip against reference `.HMI`
+files):
 
 ```text
 python -m unittest research.test_vectors
@@ -123,8 +125,9 @@ corroborates the traced kernel.
 
 Two facts about the Editor shape all of this:
 
-- **It locks the open file exclusively.** Every variant is therefore written with _Save as_ to a fresh
-  name, and the clean base is reloaded at the end to unlock what was written.
+- **It locks the open file exclusively.** Most collectors therefore write each variant with _Save as_
+  to a fresh name and reload the clean base at the end to unlock what was written. (The older
+  `collect_checksum_samples.py` instead overwrites the base with _Ctrl+S_ and copies each result aside.)
 - **The overwrite prompt defaults to _No_.** Never blind-press Enter.
 
 `import_nextion_images.py` earns its place: the `.i` preview does not have to be reverse-engineered at

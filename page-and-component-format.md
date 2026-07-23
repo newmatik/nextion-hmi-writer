@@ -52,7 +52,7 @@ Two invariants a writer must maintain:
 Every object — the page and each component — is a sequence of length-prefixed records, terminated by
 four zero bytes:
 
-```
+```text
 Object := <u32 len>"att-NN"                 # NN = number of attribute records that follow
           NN × attribute-record             # <u32 L> <char name[16]> <value[L-16]>
           event-code block(s)               # marker + code-line records (below)
@@ -86,7 +86,7 @@ null-terminated within a fixed width such as `txt_maxl`). Colours (`bco`, `pco`,
 
 Position and size are `x`, `y`, `w`, `h`, and the Editor keeps two derived values in sync:
 
-```
+```text
 endx = x + w - 1
 endy = y + h - 1
 ```
@@ -117,7 +117,7 @@ type — a page carries the page-level markers; a Timer carries `codestimer`; to
 
 The single object of the empty page `0.pa` in `ref_a_leer.HMI`. This is a real, byte-exact decode:
 
-```
+```text
 [marker] "att-28"           # 28 attribute records follow
 type      L=17 w=1  0x79 (121)     # 121 = Page
 id        L=17 w=1  0
@@ -180,7 +180,7 @@ parses to 12 = 1 `att-11` marker + 11 attributes.)
 
 Every component begins with the same block, in this order:
 
-```
+```text
 type, id, objname, vscope, drag, sendkey, aph, movex, movey,
 x, y, w, h, endx, endy, effect, first, time, lockobj, groupid0, groupid1
 ```
@@ -212,7 +212,7 @@ Authoring a Text component with deliberately odd, unique values makes each field
 binary by searching for its value. A Text with `x=101, y=103, w=107, h=109, txt="MAGREF",
 txt_maxl=42` decodes to:
 
-```
+```text
 [marker] "att-39"
 type      L=17  0x74 (116)     # Text
 objname   L=18  "t0"

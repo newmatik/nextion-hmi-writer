@@ -30,7 +30,7 @@ the format from differences.
 The single most effective decoding technique. Build an exemplar **by hand in the Editor** and give
 every field a **deliberately odd, unique value**:
 
-```
+```text
 x = 101,  y = 103,  w = 107,  h = 109,  txt = "MAGREF",  txt_maxl = 42
 ```
 
@@ -61,13 +61,13 @@ resource count matches its directory.
 **Before generating anything, prove you can reproduce an existing file byte-for-byte.** Write a
 parser and a serializer and require:
 
-```
+```text
 serialize(parse(file)) == file      # exact bytes, including the 7 MiB lead-in and all tombstones
 ```
 
 and, per page,
 
-```
+```text
 serialize_page(parse_page(section)) == section
 ```
 
@@ -101,7 +101,7 @@ simulator run.
 
 | Step                               | Proves                                      | Does **not** prove                    |
 | ---------------------------------- | ------------------------------------------- | ------------------------------------- |
-| Generator round-trip is byte-exact | your format model is complete               | anything about the Editor             |
+| Generator round-trip is byte-exact | you can reproduce observed files exactly    | that the format model is complete     |
 | Editor opens the generated `.HMI`  | container and object structure are valid    | anything at runtime                   |
 | Editor re-saves it, diff is empty  | the Editor accepts your bytes as canonical  | —                                     |
 | Editor compiles to `.TFT`          | resources, fonts and flash budget are valid | —                                     |

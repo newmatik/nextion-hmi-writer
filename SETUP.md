@@ -14,9 +14,10 @@ repository root:
 python -m unittest research.test_vectors
 ```
 
-It verifies [`research/nextion_hmi_checksum.py`](research/nextion_hmi_checksum.py) and
-[`research/nextion_hmi_binary.py`](research/nextion_hmi_binary.py) against every vector in
-[`test-vectors.md`](test-vectors.md). Requires Python 3.10 or newer.
+It verifies [`research/nextion_hmi_checksum.py`](research/nextion_hmi_checksum.py) against every
+vector in [`test-vectors.md`](test-vectors.md).
+[`research/nextion_hmi_binary.py`](research/nextion_hmi_binary.py) is proven separately by its
+byte-exact round-trip, which needs real `.HMI` files (see below). Requires Python 3.10 or newer.
 
 ## Reading and writing `.HMI` files
 

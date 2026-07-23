@@ -13,7 +13,7 @@ extracted directly from the reference files listed in [`test-vectors.md`](test-v
 
 The file begins with a count and a table of fixed-size directory records:
 
-```
+```text
 offset 0x00   u32   section_count
 offset 0x04   section_count × 28-byte directory record:
 after records u32  directory_checksum
@@ -119,7 +119,7 @@ number of records exactly, or the Editor will not load the project.
 
 ### Worked example: empty project (`main.HMI`, 128 bytes)
 
-```
+```text
 0000  1B 26 D6 E9 60 00 00 00 01 44 21 64 01 18 4F 00   .&..`....D!d..O.
 0010  20 8E 9C BA 00 00 00 00 60 00 00 00 02 00 00 00    .......`.......
 0020  00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00   ................
@@ -143,7 +143,7 @@ Decoded:
 
 The same header with `@0x1C = 4` and four records — `0.i`, `1.i`, `0.zi`, `0.pa`:
 
-```
+```text
 0060  69 00 00 00 00 00 00 00 30 2E 69 00 00 00 00 00   i.......0.i.....
 0070  69 00 00 00 00 00 00 00 31 2E 69 00 00 00 00 00   i.......1.i.....
 0080  7A 69 00 00 00 00 00 00 30 2E 7A 69 00 00 00 00   zi......0.zi....
@@ -163,7 +163,7 @@ power-on `printh` banner, and the initial `page 0`).
 
 A freshly created project's `Program.s` is the Editor's default 675-byte boilerplate, beginning:
 
-```
+```text
 0000  2F 2F 54 68 65 20 66 6F 6C 6C 6F 77 69 6E 67 20   //The following
 0010  63 6F 64 65 20 69 73 20 6F 6E 6C 79 20 72 75 6E   code is only run
 0020  20 6F 6E 63 65 20 77 68 65 6E 20 70 6F 77 65 72    once when power

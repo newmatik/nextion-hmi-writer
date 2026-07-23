@@ -9,4 +9,4 @@ pyautogui
 pywinauto
 pyperclip
 pygetwindow
-Pillow
+Pillow>=10.3.0

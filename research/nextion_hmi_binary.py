@@ -150,7 +150,9 @@ class Marker:
         return self.text, None
 
     def encode(self) -> bytes:
-        raw = self.text.encode("ascii")
+        # latin-1, not ascii: markers are parsed with ``decode("latin-1")``, so a marker carrying a
+        # byte >= 0x80 must re-encode 1:1 instead of raising and breaking the byte-exact round-trip.
+        raw = self.text.encode("latin-1")
         return struct.pack("<I", len(raw)) + raw
 
 

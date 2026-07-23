@@ -45,11 +45,15 @@ def page_len(path: Path):
     """Length of the 0.pa section (or None if locked/missing)."""
     try:
         d = path.read_bytes()
-    except (PermissionError, FileNotFoundError):
+    except (PermissionError, FileNotFoundError, OSError):
+        return None
+    if len(d) < 4:
         return None
     n = struct.unpack_from("<I", d, 0)[0]
-    for i in range(n):
+    for i in range(min(n, 64)):
         o = 4 + i * 28
+        if o + 28 > len(d):
+            break
         if d[o + 24] == 0 and d[o : o + 16].split(b"\x00")[0] == b"0.pa":
             return struct.unpack_from("<I", d, o + 16 + 4)[0]
     return None

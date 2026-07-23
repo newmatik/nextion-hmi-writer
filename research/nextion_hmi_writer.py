@@ -552,7 +552,7 @@ def assemble_from_skeleton(
         if (
             section.is_live
             and section.name not in expected
-            and any(section.name.endswith(suffix) for suffix in (".pa", ".i", ".is"))
+            and any(section.name.endswith(suffix) for suffix in (".pa", ".zi", ".i", ".is"))
         ):
             section.name_field = b"\x00" + section.name_field[1:]
             section.deleted = 1

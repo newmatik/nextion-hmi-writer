@@ -61,6 +61,7 @@ class ChecksumModel:
         self.c = c
         self.T0 = T0
         self.base = base
+        self.base_len = len(base)
         self.base_ck = base_ck
         if not c[0]:
             raise ValueError("c[0]=0 — inverse recurrence not directly possible")
@@ -143,7 +144,7 @@ class ChecksumModel:
             "base_ck": self.base_ck,
             "init": self.init,
             "columns": [[self._s[p][b] for b in range(8)] for p in range(self._nC)],
-            "base_len": len(self.base),
+            "base_len": self.base_len,
         }
 
     @classmethod

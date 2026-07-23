@@ -59,7 +59,10 @@ def main() -> int:
         raise SystemExit(f"File missing: {path}")
     shot = (args.screenshot or Path(os.environ.get("TEMP", ".")) / "nextion_validate.png").resolve()
 
-    editor.set_run_limits(max_seconds=30.0, max_actions=30)
+    # The 15 s poll loop below calls check_abort() every 0.2 s (~75 checks), and each check spends one
+    # action credit. Size the budget so a slow/hung open still reaches the timeout path (return 3)
+    # instead of aborting mid-wait, while an emergency-stop file remains effective.
+    editor.set_run_limits(max_seconds=30.0, max_actions=120)
     # Close the diagnostic popup of a previous single run exactly once.
     if popup_text() is not None:
         pyautogui.press("enter")

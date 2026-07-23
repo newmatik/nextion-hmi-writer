@@ -22,7 +22,8 @@ so contributions are held to one standard above all: **a claim is only as good a
   tied to **Nextion Editor 1.68.1.3034**; state the version behind any new observation.
 - **The canonical modules must stay proven.** [`research/nextion_hmi_binary.py`](research/nextion_hmi_binary.py)
   and [`research/nextion_hmi_checksum.py`](research/nextion_hmi_checksum.py) are the executable form of
-  the spec. Any change to them must keep the test vectors green:
+  the spec. Any change to the checksum code must keep the test vectors green; the reader/writer is held
+  to its byte-exact round-trip against reference `.HMI` files:
 
   ```sh
   python -m unittest research.test_vectors

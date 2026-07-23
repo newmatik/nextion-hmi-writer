@@ -45,8 +45,9 @@ python -m research.auto_collect_heal --auto
 
 Two Editor behaviours dictate the file naming, and both are load-bearing:
 
-- The Editor **locks the open project exclusively**, so each variant is written via _Save as_ under a
-  fresh name rather than overwriting.
+- The Editor **locks the open project exclusively**, so most collectors write each variant via
+  _Save as_ under a fresh name rather than overwriting. (The older `collect_checksum_samples.py`
+  instead overwrites the base with _Ctrl+S_ and copies each result into `checksum_samples/`.)
 - A run therefore needs a second, clean file to reload at the end to unlock everything it wrote. The
   drivers refer to that unlock file by name (`cya100.HMI` in `collect_columns.py`); any pristine base
   will do — adjust the constant to whatever you saved.
