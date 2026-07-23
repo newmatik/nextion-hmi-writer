@@ -29,9 +29,12 @@ import time
 import warnings
 from pathlib import Path
 
-import pyautogui
-import pyperclip
-import pygetwindow
+try:
+    import pyautogui
+    import pyperclip
+    import pygetwindow
+except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
+    raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
 warnings.filterwarnings("ignore")
 pyautogui.PAUSE = 0.10

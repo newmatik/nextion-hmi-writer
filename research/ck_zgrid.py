@@ -13,7 +13,10 @@ import sys
 import time
 from pathlib import Path
 
-import pyautogui
+try:
+    import pyautogui
+except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
+    raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
 from research.ck_probe import open_file, save_as, focus
 

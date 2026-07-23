@@ -15,10 +15,13 @@ import sys
 import time
 from pathlib import Path
 
-import pyautogui
-import pyperclip
-import pygetwindow
-from pywinauto import Application
+try:
+    import pyautogui
+    import pyperclip
+    import pygetwindow
+    from pywinauto import Application
+except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
+    raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
 COMBO = (1645, 331)
 T0 = (1651, 373)

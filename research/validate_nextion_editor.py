@@ -12,8 +12,11 @@ import os
 import time
 from pathlib import Path
 
-import pyautogui
-import pyperclip
+try:
+    import pyautogui
+    import pyperclip
+except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
+    raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
 from research import editor_control as editor
 
