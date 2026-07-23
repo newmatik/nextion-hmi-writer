@@ -53,7 +53,9 @@ Two behaviours make the file grow monotonically:
   size purely by the path of edits that produced them.
 
 A correct reader must (a) honour `deleted`, (b) treat a name whose first byte is `0x00` as dead, and
-(c) resolve each live name to its directory record — later records win if a name repeats. A correct
+(c) resolve each live name to its directory record. Because a save tombstones the record it
+supersedes, a well-formed file holds exactly one live record per name; a repeated _live_ name is
+corruption to be surfaced, not silently resolved. A correct
 _writer_ that wants byte-exact round-trips must preserve every non-section byte verbatim (the 7 MiB
 lead-in and all tombstoned remnants), mirror the directory, and update both directory checksums; see
 [`methodology.md`](methodology.md).

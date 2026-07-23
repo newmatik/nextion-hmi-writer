@@ -556,7 +556,12 @@ def fresh_name(folder: str, prefix: str) -> str:
 
 
 def save_as(full_path: str) -> bool:
-    """Save the current state as an absolute .HMI (fresh names, no overwriting).
+    """Save the current state as an absolute .HMI.
+
+    Callers pass a collision-free name (see ``fresh_base_name``); that, not this function, is what
+    keeps the collectors from overwriting. ``save_as`` does not enforce it: if ``full_path`` already
+    exists it still confirms the Editor's overwrite prompt (clicks *Ja/Yes*), so an existing file IS
+    replaced. Pass a fresh path.
 
     Robust against the spontaneous 'Anmeldung erforderlich' nag: `dismiss_foreign_popup()` is
     called at several points, and success only counts once the file is REALLY on disk AND no file
