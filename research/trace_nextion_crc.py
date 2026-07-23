@@ -17,6 +17,7 @@ Run with the x64 Python runtime for which ``frida`` was installed::
 from __future__ import annotations
 
 import argparse
+import atexit
 import json
 import subprocess
 import sys
@@ -108,6 +109,8 @@ def main(argv: list[str] | None = None) -> int:
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     session = frida.attach(args.pid)
+    # Detach on any exit path, including create_script()/load() raising below.
+    atexit.register(session.detach)
     script = session.create_script(_hook_source(args.limit))
     ready = False
     records = 0
@@ -129,7 +132,6 @@ def main(argv: list[str] | None = None) -> int:
         while not ready and time.monotonic() < deadline:
             time.sleep(0.05)
         if not ready:
-            session.detach()
             raise SystemExit("CRC hooks did not become active in time")
 
         trigger = None
@@ -153,7 +155,6 @@ def main(argv: list[str] | None = None) -> int:
         while time.monotonic() < end and records < args.limit:
             time.sleep(0.1)
 
-    session.detach()
     print(f"Trace: {args.output} ({records} CRC calls)")
     if args.open_path is not None and trigger is not None and trigger.returncode != 0:
         print(trigger.stderr, file=sys.stderr)

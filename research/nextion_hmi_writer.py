@@ -115,11 +115,15 @@ def _u8(value: int) -> bytes:
 
 
 def _u16(value: int) -> bytes:
-    return int(value & 0xFFFF).to_bytes(2, "little")
+    if not 0 <= value <= 0xFFFF:
+        raise WriterError(f"value out of range for u16: {value}")
+    return int(value).to_bytes(2, "little")
 
 
 def _u32(value: int) -> bytes:
-    return int(value & 0xFFFFFFFF).to_bytes(4, "little")
+    if not 0 <= value <= 0xFFFFFFFF:
+        raise WriterError(f"value out of range for u32: {value}")
+    return int(value).to_bytes(4, "little")
 
 
 def _set_geometry(component: Component, x: int, y: int, w: int, h: int) -> None:
