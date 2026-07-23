@@ -1,0 +1,27 @@
+# Sample .HMI files from a collection run: ~7 MB each, several hundred per run,
+# regenerable measurement scratch. The format reference does not depend on them.
+# Both collector output directories are covered: reference/ (auto_collect*, ck_*, collect_*)
+# and checksum_samples/ (collect_checksum_samples, watch_checksum_samples).
+/samples/*.HMI
+/samples/**/*.HMI
+
+# Editor diagnostic output. Scoped to samples/ on purpose -- an unanchored *.png would also
+# silently swallow any image added to the format reference at the repository root.
+/samples/**/diag*.bmp
+/samples/**/*.png
+
+# Screenshot capture output (research/capture_screenshots.py). The default target is ./screenshots/,
+# and each run also stages full-screen raw frames. None of it belongs in the repository.
+/screenshots/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Packaging / tooling
+*.egg-info/
+build/
+dist/
+.ruff_cache/
