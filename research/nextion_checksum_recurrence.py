@@ -199,7 +199,9 @@ def solve(folder: Path, prefix: str):
 
     def compute(page):
         ck = base_ck
-        for i in range(len(page)):
+        # Start at 4: bytes 0..3 are the stored checksum field, not payload. A reference page with a
+        # different stored checksum would otherwise be scored as if those bytes were payload changes.
+        for i in range(4, len(page)):
             db = page[i] ^ base[i]
             if not db:
                 continue
