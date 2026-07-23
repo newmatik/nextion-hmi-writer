@@ -79,7 +79,8 @@ class ChecksumModel:
             for b in range(8):
                 if (byte >> b) & 1:
                     acc ^= col[b]
-        self.init = acc  # = ck(zero page of the same length); length-independent constant
+        self.init = acc  # = ck(zero page) at the base length; this is Z(L), not length-independent
+        # (see the caveat in the module docstring: the "any length" claim did not survive).
 
     def _extend_forward(self, pmax):
         d, c = self.d, self.c

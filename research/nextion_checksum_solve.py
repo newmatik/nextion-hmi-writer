@@ -248,7 +248,8 @@ def solve(base_path: Path, variant_paths: list[Path], section: str = "0.pa") -> 
     basis = basis[:32]
     w = [src[i] for i in basis]
     wn = [dst[i] for i in basis]
-    inverse = [matmul(wn, gf2_invert(w)[i]) for i in range(32)]  # A^{-1}: trailing t -> t-1
+    inv_w = gf2_invert(w)  # hoisted out of the comprehension: identical for every column
+    inverse = [matmul(wn, inv_w[i]) for i in range(32)]  # A^{-1}: trailing t -> t-1
     advance = gf2_invert(inverse)
 
     anchor_trailing = len(base) - 1 - lo
