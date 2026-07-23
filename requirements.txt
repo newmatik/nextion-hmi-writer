@@ -1,0 +1,12 @@
+# Dependencies for driving the Nextion Editor GUI from the outside (Windows only).
+#
+# The format reference itself and the checksum solvers are stdlib-only and need nothing here.
+# See the extras in pyproject.toml for the trace-only and solver-only dependencies:
+#   pip install -e .[trace]     # frida, for research/trace_nextion_crc.py (x64 Python)
+#   pip install -e .[solvers]   # numpy, for a few of the checksum solvers
+
+pyautogui
+pywinauto
+pyperclip
+pygetwindow
+Pillow>=12.3.0
