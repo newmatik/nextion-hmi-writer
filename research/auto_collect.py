@@ -160,6 +160,7 @@ def main() -> int:
     import json
     from collections import namedtuple
     P = namedtuple("P", "x y")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)  # must exist before a fresh calibration writes .calib.json
     calib_file = OUT_DIR / ".calib.json"
 
     reuse = False
@@ -200,7 +201,6 @@ def main() -> int:
         print("Aborted — please restart.")
         return 1
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
     # Pick a fresh name prefix that does NOT exist yet. That way a leftover file from an aborted run
     # that is still locked by the Editor can never collide -> no overwrite dialogs.
     import string

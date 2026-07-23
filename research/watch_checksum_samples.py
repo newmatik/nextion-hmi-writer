@@ -12,7 +12,7 @@ Procedure:
   2. Start this script. It puts the first value into the clipboard.
   3. In the Editor, per sample:  double-click txt cell  ->  Ctrl+A  ->  Ctrl+V  ->  Enter  ->  Ctrl+S
      The script reports every detected save and readies the next value.
-  4. After 56 samples it stops; the script terminates by itself.
+  4. After the last value in checksum_txt_values.txt it stops; the script terminates by itself.
 """
 
 from __future__ import annotations

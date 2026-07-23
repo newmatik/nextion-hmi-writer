@@ -24,7 +24,7 @@ dependencies = []
 
 [project.optional-dependencies]
 # Driving the editor GUI from the outside (Windows only).
-drivers = ["pyautogui", "pywinauto", "pyperclip", "pygetwindow", "Pillow>=10.3.0"]
+drivers = ["pyautogui", "pywinauto", "pyperclip", "pygetwindow", "Pillow>=12.3.0"]
 # Runtime trace of the editor's checksum helpers (research/trace_nextion_crc.py, x64 Python).
 trace = ["frida"]
 # A few of the checksum solvers use numpy.

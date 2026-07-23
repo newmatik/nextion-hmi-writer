@@ -158,7 +158,10 @@ def main():
         if len(page) != len(base):
             return None
         ck = base_ck
-        for i in range(len(page)):
+        # Start at 4: bytes 0..3 are the stored checksum field, not payload. Independent reference
+        # pages carry a different stored checksum, so counting byte 0 would make compute() bail and
+        # the cross-check silently validate nothing.
+        for i in range(4, len(page)):
             db = page[i] ^ base[i]
             if not db:
                 continue

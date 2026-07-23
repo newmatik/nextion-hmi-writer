@@ -47,7 +47,7 @@ Component::
     event markers                             e.g. "codesup-1", suffix = number of code lines
     4 null bytes                              terminates every component
 
-Records with ``L < 16`` are markers without a name field, records from ``L >= 17`` are attributes.
+Records with ``L < 16`` are markers without a name field, records with ``L >= 16`` are attributes.
 
 Bytes not understood
 --------------------
@@ -153,6 +153,13 @@ class Marker:
         # latin-1, not ascii: markers are parsed with ``decode("latin-1")``, so a marker carrying a
         # byte >= 0x80 must re-encode 1:1 instead of raising and breaking the byte-exact round-trip.
         raw = self.text.encode("latin-1")
+        if len(raw) >= NAME_FIELD_SIZE:
+            # A record with L >= 16 is re-read as an Attribute, so an over-long marker (e.g.
+            # "codesloadend-100") would silently desynchronise the component. Fail loudly instead.
+            raise HmiFormatError(
+                f"marker text {self.text!r} encodes to {len(raw)} bytes; markers must stay under "
+                f"{NAME_FIELD_SIZE} bytes or they re-parse as attributes"
+            )
         return struct.pack("<I", len(raw)) + raw
 
 
