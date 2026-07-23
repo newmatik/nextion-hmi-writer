@@ -351,15 +351,18 @@ def parse_container(raw: bytes) -> HmiFile:
     if count == 0 or 4 + count * DIRECTORY_RECORD_SIZE > len(raw):
         raise HmiFormatError(f"implausible section count: {count}")
     directory_size = 4 + count * DIRECTORY_RECORD_SIZE
-    if len(raw) >= DIRECTORY_MIRROR_OFFSET + directory_size:
-        mirror = raw[DIRECTORY_MIRROR_OFFSET : DIRECTORY_MIRROR_OFFSET + directory_size]
-        if raw[:directory_size] != mirror:
-            raise HmiFormatError("mirrored section directories differ from one another")
-        expected = directory_checksum(raw[:directory_size])
-        primary = struct.unpack_from("<I", raw, directory_size)[0]
-        backup = struct.unpack_from("<I", raw, DIRECTORY_MIRROR_OFFSET + directory_size)[0]
-        if primary != expected or backup != expected:
-            raise HmiFormatError("checksum of the section directory is invalid")
+    # The mirror is mandatory: a real .HMI is several MiB, so a file too short to hold it at
+    # 0x80000 is truncated or not a container at all. Fail here rather than let encode() break later.
+    if len(raw) < DIRECTORY_MIRROR_OFFSET + directory_size:
+        raise HmiFormatError("file too short to hold the mirrored section directory")
+    mirror = raw[DIRECTORY_MIRROR_OFFSET : DIRECTORY_MIRROR_OFFSET + directory_size]
+    if raw[:directory_size] != mirror:
+        raise HmiFormatError("mirrored section directories differ from one another")
+    expected = directory_checksum(raw[:directory_size])
+    primary = struct.unpack_from("<I", raw, directory_size)[0]
+    backup = struct.unpack_from("<I", raw, DIRECTORY_MIRROR_OFFSET + directory_size)[0]
+    if primary != expected or backup != expected:
+        raise HmiFormatError("checksum of the section directory is invalid")
 
     sections: list[Section] = []
     for index in range(count):

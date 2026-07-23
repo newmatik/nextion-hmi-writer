@@ -33,6 +33,7 @@ try:
     import pyautogui
     import pyperclip
     import pygetwindow
+    import pywinauto  # noqa: F401  (used lazily in helpers; guarded here so it also fails fast)
 except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
     raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
