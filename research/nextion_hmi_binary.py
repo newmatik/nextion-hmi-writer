@@ -320,7 +320,15 @@ class HmiFile:
         for index, section in enumerate(self.sections):
             offset = 4 + index * DIRECTORY_RECORD_SIZE
             directory[offset : offset + DIRECTORY_RECORD_SIZE] = section.encode_record()
-            out[section.start : section.start + section.size] = section.data
+            if len(section.data) != section.size:
+                raise HmiFormatError(
+                    f"section {section.name!r}: data length {len(section.data)} does not match "
+                    f"size {section.size}"
+                )
+            end = section.start + section.size
+            if end > len(out):
+                raise HmiFormatError(f"section {section.name!r} extends past the container end")
+            out[section.start : end] = section.data
         checksum = struct.pack("<I", directory_checksum(directory))
         # Editor 1.68 keeps two byte-identical directory copies. If only the first one is updated,
         # it rejects the project with "Wrong Hmifile or Hmifile has been damaged".

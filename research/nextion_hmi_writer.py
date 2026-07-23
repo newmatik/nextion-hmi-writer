@@ -438,6 +438,9 @@ def _build_main_hmi(main: Section, page_count: int, font_count: int, image_count
     resources.extend(("zi", f"{index}.zi") for index in range(font_count))
     resources.extend(("pa", f"{index}.pa") for index in range(page_count))
     main_data = bytearray(main.data[:0x60])
+    # header_length (0x04) and the resource-directory offset (0x18) both point at 0x60; keep them in
+    # step so a differing exemplar cannot yield a self-contradictory main.HMI.
+    struct.pack_into("<I", main_data, 0x04, 0x60)
     struct.pack_into("<I", main_data, 0x18, 0x60)
     struct.pack_into("<I", main_data, 0x1C, len(resources))
     for extension, name in resources:
