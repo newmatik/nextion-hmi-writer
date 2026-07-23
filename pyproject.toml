@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nextion-hmi-writer"
+version = "0.1.0"
+description = "A reverse-engineered reference for the Nextion Editor .HMI format, with tooling to read, write and drive it"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Newmatik GmbH" }]
+keywords = ["nextion", "hmi", "tft", "reverse-engineering", "embedded", "gui-automation"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Embedded Systems",
+    "Topic :: File Formats",
+]
+
+# The format reference and the checksum solvers are stdlib-only.
+dependencies = []
+
+[project.optional-dependencies]
+# Driving the editor GUI from the outside (Windows only).
+drivers = ["pyautogui", "pywinauto", "pyperclip", "pygetwindow", "Pillow"]
+# Runtime trace of the editor's checksum helpers (research/trace_nextion_crc.py, x64 Python).
+trace = ["frida"]
+# A few of the checksum solvers use numpy.
+solvers = ["numpy"]
+
+[project.urls]
+Repository = "https://github.com/newmatik/nextion-hmi-writer"
+
+[tool.setuptools]
+packages = ["research"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+# Keep it light: pyflakes + a subset of pycodestyle. Line length is enforced by the formatter, not
+# the linter, so long reverse-engineering tables in the research scripts do not fail CI.
+select = ["E", "F", "W"]
+ignore = ["E501"]
