@@ -1,4 +1,4 @@
-"""Complete, length-independent model of the Nextion section checksum.
+"""Column-recurrence model of the Nextion section checksum (see the length-dependence caveat below).
 
 From the measured single-bit columns (window of 72 bytes) the linear matrix recurrence (degree d) is
 determined. The column sequence over the trailing position (distance from the end) is extrapolated by

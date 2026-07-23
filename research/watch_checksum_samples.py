@@ -48,6 +48,9 @@ def main() -> int:
         return 1
 
     values = load_values()
+    if not values:
+        print("No values to capture:", VALUES, "is empty or has only comment lines.")
+        return 1
     SAMPLE_DIR.mkdir(parents=True, exist_ok=True)
     print(f"{len(values)} values to capture. Samples -> {SAMPLE_DIR}\n")
 

@@ -9,8 +9,9 @@ as G (the injection is controllable). Hence for every L:
 
 where trans(m) is the recurrence stepped forward m times (trans(i)=e_i for i<32,
 trans(m)=XOR_i c_i*trans(m-32+i) for m>=32). From many length support points (zga grid +
-csa references) v is solved per output bit over GF(2). Z(L), and with it the checksum for ANY
-length, is then computable.
+csa references) v is solved per output bit over GF(2), which aims to make Z(L), and with it the
+checksum for any length, computable. In this package that algebraic route stayed converging but never
+closed; the traced kernel (see the format reference) is what writes files today.
 
 Usage:  python -m research.nextion_checksum_zsolve [folder]
 """
@@ -21,7 +22,10 @@ import glob
 import sys
 from pathlib import Path
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError as exc:  # numpy ships only with the optional [solvers] extra
+    raise SystemExit("numpy is required for this solver; install it with: pip install -e .[solvers]") from exc
 
 from research.nextion_checksum_model import build, page_and_ck
 

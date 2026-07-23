@@ -11,7 +11,10 @@ import glob
 import sys
 from pathlib import Path
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError as exc:  # numpy ships only with the optional [solvers] extra
+    raise SystemExit("numpy is required for this diagnostic; install it with: pip install -e .[solvers]") from exc
 
 from research.nextion_checksum_model import build, page_and_ck
 
