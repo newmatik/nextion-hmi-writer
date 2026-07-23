@@ -21,7 +21,6 @@ EMERGENCY STOP: create the file ec.ABORT_FILE.
 
 from __future__ import annotations
 
-import glob
 import json
 import os
 import sys
@@ -107,8 +106,7 @@ def main() -> int:
     with open(RESULT_JSON, "w") as fh:
         json.dump(payload, fh, indent=1)
     print("Result ->", RESULT_JSON)
-    for f in glob.glob(os.path.join(FOLDER, PREFIX + "*.HMI")):
-        pass                                     # raw samples stay (gitignored) for re-checks
+    # Raw samples stay on disk (gitignored) for re-checks.
     return 0
 
 
