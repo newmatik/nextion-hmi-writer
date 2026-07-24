@@ -154,6 +154,7 @@ def main(argv: list[str] | None = None) -> int:
         end = time.monotonic() + args.seconds
         while time.monotonic() < end and records < args.limit:
             time.sleep(0.1)
+        script.unload()  # stop callbacks before the with-block closes the output stream
 
     print(f"Trace: {args.output} ({records} CRC calls)")
     if args.open_path is not None and trigger is not None and trigger.returncode != 0:
