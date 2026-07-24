@@ -139,6 +139,10 @@ def main():
     Ls = sorted(samples)
     print(f"Length support points: {len(Ls)}  (min={Ls[0]}, max={Ls[-1]})", flush=True)
 
+    # trans(m) and Z() below hardcode the degree-32 recurrence; fail loudly if the model ever fits a
+    # different degree rather than silently producing a wrong Z(L).
+    assert d == 32, f"nextion_checksum_zsolve assumes a degree-32 recurrence, got d={d}"
+
     # trans(m) up to max m, iteratively.
     maxm = Ls[-1] - BASE_L
     trans = [0] * (maxm + 1)

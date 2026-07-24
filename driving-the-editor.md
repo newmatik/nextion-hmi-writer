@@ -180,9 +180,11 @@ then depends on a fixed contract instead of editor bookkeeping.
 ## Fonts
 
 `.zi` fonts are made with `Tools → Font Generator` (the dialog is titled **Font Creator**). They
-**cannot** be reproduced on a build server — the generator is part of the Windows GUI — so version
-the `.zi` files and pin them by SHA-256. Each **font family + pixel height** pair is its own resource
-with its own id, and the ids are indices (`font=2`), so the order is part of the contract.
+**cannot** be reproduced on a build server — the generator is part of the Windows GUI — so a project
+that ships panels must version its `.zi` files and pin them by SHA-256. (This reference repository
+commits no binaries, `.zi` included; see [`CONTRIBUTING.md`](CONTRIBUTING.md).) Each **font family +
+pixel height** pair is its own resource with its own id, and the ids are indices (`font=2`), so the
+order is part of the contract.
 
 ### The 16-pixel floor — Confirmed
 
