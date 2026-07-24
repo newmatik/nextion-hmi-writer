@@ -19,7 +19,7 @@ The format reference and its stdlib checks need nothing installed. A few checksu
 **NumPy**, and anything that drives the Editor needs a live **Nextion Editor 1.68.1.3034** on Windows:
 
 ```text
-pip install -e .[solvers]    # NumPy, for the checksum solvers (run from the repository root)
+python -m pip install -e ".[solvers]"   # NumPy, for the checksum solvers (run from the repo root)
 pip install pyautogui pywinauto pyperclip pygetwindow Pillow   # or: pip install -r ../requirements.txt
 pip install frida            # only for trace_nextion_crc.py (x64 Python)
 ```

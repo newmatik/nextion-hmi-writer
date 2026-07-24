@@ -126,10 +126,10 @@ def main(argv: list[str] | None = None) -> int:
             if isinstance(payload, dict) and payload.get("event") == "crc":
                 records += 1
 
-        script.on("message", on_message)
-        script.load()
         trigger = None
         try:
+            script.on("message", on_message)
+            script.load()
             deadline = time.monotonic() + 5.0
             while not ready and time.monotonic() < deadline:
                 time.sleep(0.05)
