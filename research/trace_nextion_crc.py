@@ -128,33 +128,37 @@ def main(argv: list[str] | None = None) -> int:
 
         script.on("message", on_message)
         script.load()
-        deadline = time.monotonic() + 5.0
-        while not ready and time.monotonic() < deadline:
-            time.sleep(0.05)
-        if not ready:
-            raise SystemExit("CRC hooks did not become active in time")
-
         trigger = None
-        if args.open_path is not None:
-            trigger = _trigger_open(args.open_path, args.controller_python)
-            stream.write(
-                json.dumps(
-                    {
-                        "event": "trigger",
-                        "returncode": trigger.returncode,
-                        "stdout": trigger.stdout,
-                        "stderr": trigger.stderr,
-                    },
-                    ensure_ascii=False,
-                )
-                + "\n"
-            )
-            stream.flush()
+        try:
+            deadline = time.monotonic() + 5.0
+            while not ready and time.monotonic() < deadline:
+                time.sleep(0.05)
+            if not ready:
+                raise SystemExit("CRC hooks did not become active in time")
 
-        end = time.monotonic() + args.seconds
-        while time.monotonic() < end and records < args.limit:
-            time.sleep(0.1)
-        script.unload()  # stop callbacks before the with-block closes the output stream
+            if args.open_path is not None:
+                trigger = _trigger_open(args.open_path, args.controller_python)
+                stream.write(
+                    json.dumps(
+                        {
+                            "event": "trigger",
+                            "returncode": trigger.returncode,
+                            "stdout": trigger.stdout,
+                            "stderr": trigger.stderr,
+                        },
+                        ensure_ascii=False,
+                    )
+                    + "\n"
+                )
+                stream.flush()
+
+            end = time.monotonic() + args.seconds
+            while time.monotonic() < end and records < args.limit:
+                time.sleep(0.1)
+        finally:
+            # Runs on every exit path so a late CRC callback cannot write to the stream once the
+            # with-block below closes it.
+            script.unload()
 
     print(f"Trace: {args.output} ({records} CRC calls)")
     if args.open_path is not None and trigger is not None and trigger.returncode != 0:
