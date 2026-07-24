@@ -44,8 +44,8 @@ python -m pip install -r requirements.txt
 Optional extras (see [`pyproject.toml`](pyproject.toml)):
 
 ```sh
-python -m pip install -e .[trace]     # frida, for research/trace_nextion_crc.py (x64 Python)
-python -m pip install -e .[solvers]   # numpy, for a few of the checksum solvers
+python -m pip install -e ".[trace]"     # frida, for research/trace_nextion_crc.py (x64 Python)
+python -m pip install -e ".[solvers]"   # numpy, for a few of the checksum solvers
 ```
 
 Then, for example, screenshot every page of a project from the maximised editor:
