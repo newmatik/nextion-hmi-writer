@@ -353,8 +353,8 @@ def parse_container(raw: bytes) -> HmiFile:
     directory_size = 4 + count * DIRECTORY_RECORD_SIZE
     # The mirror is mandatory: a real .HMI is several MiB, so a file too short to hold it at
     # 0x80000 is truncated or not a container at all. Fail here rather than let encode() break later.
-    if len(raw) < DIRECTORY_MIRROR_OFFSET + directory_size:
-        raise HmiFormatError("file too short to hold the mirrored section directory")
+    if len(raw) < DIRECTORY_MIRROR_OFFSET + directory_size + 4:
+        raise HmiFormatError("file too short to hold the mirrored section directory and checksum")
     mirror = raw[DIRECTORY_MIRROR_OFFSET : DIRECTORY_MIRROR_OFFSET + directory_size]
     if raw[:directory_size] != mirror:
         raise HmiFormatError("mirrored section directories differ from one another")
@@ -399,6 +399,8 @@ def parse_page(data: bytes) -> Page:
 
     components: list[Component] = []
     flags: list[int] = []
+    if objects > (len(data) - info_addr) // CONTENT_HEADER_SIZE:
+        raise HmiFormatError("page object table extends beyond the section")
     for index in range(objects):
         entry = info_addr + index * CONTENT_HEADER_SIZE
         start, size, flag = struct.unpack_from("<III", data, entry)
