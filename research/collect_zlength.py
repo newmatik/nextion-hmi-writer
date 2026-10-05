@@ -124,7 +124,7 @@ def collect(n0: int, n1: int, prefix: str = "zc") -> dict:
             try:
                 os.remove(full)
             except OSError:
-                # File already gone or still locked: leftover cleanup is not needed for correctness.
+                # Already gone or still locked: a leftover file stays for manual cleanup; the run result does not depend on it.
                 pass
     print(f"  valid (longest run): {len(result)}/{len(pending)}  "
           f"N={best[0] if best else '-'}..{best[-1] if best else '-'}", flush=True)
@@ -150,7 +150,7 @@ def main() -> int:
         try:
             os.remove(f)
         except OSError:
-            # File already gone or still locked: leftover cleanup is not needed for correctness.
+            # Already gone or still locked: a leftover file stays for manual cleanup; the run result does not depend on it.
             pass
     Ns = sorted(res)
     # determine the longest consecutive run

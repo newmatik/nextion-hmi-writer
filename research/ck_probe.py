@@ -52,7 +52,7 @@ def focus():
         try:
             w.activate()
         except Exception:
-            # Focus is best effort: the next GUI action re-activates or fails loudly on its own.
+            # Best effort and NOT verified: on failure the run continues and relies on the editor still being in front.
             pass
     pyautogui.click(*TITLEBAR)
     time.sleep(0.25)

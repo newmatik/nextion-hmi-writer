@@ -103,7 +103,7 @@ def main() -> int:
             try:
                 editor.activate()
             except Exception:
-                # Focus is best effort: the next GUI action re-activates or fails loudly on its own.
+                # Best effort and NOT verified: on failure the run continues and relies on the editor still being in front.
                 pass
             time.sleep(0.15)
         pyperclip.copy(value)

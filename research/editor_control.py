@@ -99,7 +99,8 @@ def set_run_limits(max_seconds: float | None = None, max_actions: int | None = N
         if os.path.exists(ABORT_FILE):
             os.remove(ABORT_FILE)          # clean up an old emergency stop
     except OSError:
-        # File already gone or still locked: leftover cleanup is not needed for correctness.
+        # Not fatal here, but a marker that cannot be removed stays in place and
+        # check_abort() will stop the run at the first guarded action.
         pass
 
 
@@ -178,7 +179,8 @@ def ensure_geometry(retries: int = 4) -> None:
                 w.maximize()
             time.sleep(0.4)
         except Exception:
-            # Window placement is cosmetic; a failure leaves the editor usable as is.
+            # Placement failed: geometry_ok() below re-checks, the loop retries, and
+            # escalate() stops the run if the geometry never becomes canonical.
             pass
         if geometry_ok():
             return
@@ -211,7 +213,7 @@ def focus():
             try:
                 w.activate()
             except Exception:
-                # Focus is best effort: the next GUI action re-activates or fails loudly on its own.
+                # Activation can fail transiently; the title-bar click and the foreground check below retry it.
                 pass
         pyautogui.click(*TITLEBAR)
         time.sleep(0.2)
@@ -234,7 +236,8 @@ def setup() -> None:
         time.sleep(0.2)
         w.maximize()
     except Exception:
-        # Window placement is cosmetic; a failure leaves the editor usable as is.
+        # Placement failed: focus() below runs ensure_geometry(), which retries and
+        # escalates if the window never reaches the canonical geometry.
         pass
     time.sleep(0.4)
     focus()
