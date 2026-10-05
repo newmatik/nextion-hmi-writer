@@ -25,7 +25,7 @@ from pathlib import Path
 
 
 def page_and_ck(path: str) -> tuple[bytes, int] | None:
-    raw = open(path, "rb").read()
+    raw = Path(path).read_bytes()
     count = struct.unpack_from("<I", raw, 0)[0]
     for i in range(count):
         o = 4 + i * 28

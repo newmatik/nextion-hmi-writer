@@ -185,7 +185,7 @@ def main():
 
     # ---- Cross-check against independent reference pages of the same length ----
     def page_and_ck(path):
-        raw = open(path, "rb").read()
+        raw = Path(path).read_bytes()
         n = struct.unpack_from("<I", raw, 0)[0]
         for i in range(n):
             o = 4 + i * 28
