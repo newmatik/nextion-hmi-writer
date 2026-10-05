@@ -78,6 +78,7 @@ def main() -> int:
             try:
                 editor.activate()
             except Exception:
+                # Focus is best effort: the next GUI action re-activates or fails loudly on its own.
                 pass
             time.sleep(0.2)
 
@@ -101,6 +102,7 @@ def main() -> int:
         try:
             dlg.child_window(class_name="Edit", found_index=0).set_edit_text(name)
         except Exception:
+            # Pre-filling the name is best effort; the following save step verifies the result.
             pass
         time.sleep(0.15)
         clicked = False
@@ -112,11 +114,13 @@ def main() -> int:
                     clicked = True
                     break
             except Exception:
+                # Control vanished or is not clickable: try the next candidate.
                 pass
         if not clicked:
             try:
                 dlg.type_keys("{ENTER}")
             except Exception:
+                # Fallback only: the dialog may already have closed; the caller re-checks for it.
                 pass
         time.sleep(0.5)
         conf = get_dialog()
@@ -125,6 +129,7 @@ def main() -> int:
             try:
                 conf.type_keys("{ENTER}")
             except Exception:
+                # Fallback only: the dialog may already have closed; the caller re-checks for it.
                 pass
         for _ in range(15):
             if get_dialog() is None:
@@ -173,6 +178,7 @@ def main() -> int:
             try:
                 stray.type_keys("{ENTER}")
             except Exception:
+                # Fallback only: the dialog may already have closed; the caller re-checks for it.
                 pass
             time.sleep(0.3)
         pyautogui.click(tab.x, tab.y)       # BACK to the Program.s tab (Editor jumps to Display after a save)

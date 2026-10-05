@@ -103,6 +103,7 @@ def main() -> int:
             try:
                 editor.activate()
             except Exception:
+                # Focus is best effort: the next GUI action re-activates or fails loudly on its own.
                 pass
             time.sleep(0.15)
         pyperclip.copy(value)
