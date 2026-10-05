@@ -15,7 +15,7 @@ from pathlib import Path
 try:
     import pyautogui
     import pyperclip
-    import pywinauto  # noqa: F401  (used lazily below; guarded here so it also fails fast)
+    from pywinauto import Desktop
 except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
     raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
@@ -27,8 +27,6 @@ def popup_text() -> str | None:
     if window is None:
         # Load errors of Editor 1.68 are not a `MessageForm` but a second modal WinForms window
         # carrying the same title "Nextion Editor" as the main window.
-        from pywinauto import Desktop
-
         main = editor.editor_win()
         main_handle = main._hWnd if main is not None else None
         try:
@@ -49,6 +47,7 @@ def popup_text() -> str | None:
             if value and value not in texts:
                 texts.append(value)
     except Exception:
+        # The message box closed mid-enumeration: report the texts collected so far.
         pass
     return " | ".join(texts) or "MessageForm"
 

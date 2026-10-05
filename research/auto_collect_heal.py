@@ -111,6 +111,7 @@ def main():
             try:
                 editor.activate()
             except Exception:
+                # Best effort and NOT verified: on failure the run continues and relies on the editor still being in front.
                 pass
             time.sleep(0.2)
 
@@ -148,6 +149,7 @@ def main():
                     b.click_input()
                     return True
             except Exception:
+                # Control vanished or is not clickable: try the next candidate.
                 pass
         return False
 
@@ -159,6 +161,7 @@ def main():
                 try:
                     d.type_keys("{ENTER}")
                 except Exception:
+                    # Fallback only: the dialog may already have closed; the caller re-checks for it.
                     pass
             time.sleep(0.3)
 
@@ -174,12 +177,14 @@ def main():
         try:
             dlg.child_window(class_name="Edit", found_index=0).set_edit_text(name)
         except Exception:
+            # Best effort: if the name cannot be entered the dialog keeps its default; only the dialog state is checked afterwards, not which file was written.
             pass
         time.sleep(0.15)
         if not click_button(dlg, ("&Speichern", "Speichern", "&Save", "Save")):
             try:
                 dlg.type_keys("{ENTER}")
             except Exception:
+                # Fallback only: the dialog may already have closed; the caller re-checks for it.
                 pass
         time.sleep(0.5)
         dismiss_stray()
@@ -213,6 +218,7 @@ def main():
             time.sleep(0.2)
             edit.type_keys("{ENTER}")
         except Exception:
+            # Best effort: the recovery loop below re-checks the dialog and presses ENTER again.
             pass
         time.sleep(0.6)
         # Recovery: one ENTER either triggers 'Öffnen' or acknowledges an error box ('file is in
@@ -223,6 +229,7 @@ def main():
             try:
                 get_dialog().type_keys("{ENTER}")
             except Exception:
+                # Fallback only: the dialog may already have closed; the caller re-checks for it.
                 pass
             time.sleep(0.5)
         if get_dialog() is not None:
@@ -346,6 +353,7 @@ def main():
         try:
             (OUT_DIR / f"{prefix}zzz.HMI").unlink()
         except OSError:
+            # Already gone or still locked: a leftover file stays for manual cleanup; the run result does not depend on it.
             pass
 
     print(f"\nDone: {len(values)} samples ({prefix}). Self-heals: {heals}.", flush=True)

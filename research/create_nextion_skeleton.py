@@ -18,9 +18,9 @@ from __future__ import annotations
 
 import argparse
 import ctypes
+import ctypes.wintypes as wintypes
 import os
 import time
-from ctypes import wintypes
 from pathlib import Path
 
 try:
@@ -111,7 +111,7 @@ def save_current(path: Path) -> None:
 
 
 def add_pages(total: int) -> None:
-    _left, _top, _right, _bottom = panel_rect("Page")
+    panel_rect("Page")  # fail fast unless exactly one Page panel is visible
     for index in range(1, total):
         editor.focus()
         click_panel_add("Page")

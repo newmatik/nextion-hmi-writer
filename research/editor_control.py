@@ -33,7 +33,7 @@ try:
     import pyautogui
     import pyperclip
     import pygetwindow
-    import pywinauto  # noqa: F401  (used lazily in helpers; guarded here so it also fails fast)
+    from pywinauto import Application, Desktop
 except ImportError as exc:  # GUI drivers ship only with the optional [drivers] extra
     raise SystemExit("this tool needs the GUI drivers; install them with: pip install -e .[drivers]") from exc
 
@@ -99,6 +99,8 @@ def set_run_limits(max_seconds: float | None = None, max_actions: int | None = N
         if os.path.exists(ABORT_FILE):
             os.remove(ABORT_FILE)          # clean up an old emergency stop
     except OSError:
+        # Not fatal here, but a marker that cannot be removed stays in place and
+        # check_abort() will stop the run at the first guarded action.
         pass
 
 
@@ -177,6 +179,8 @@ def ensure_geometry(retries: int = 4) -> None:
                 w.maximize()
             time.sleep(0.4)
         except Exception:
+            # Placement failed: geometry_ok() below re-checks, the loop retries, and
+            # escalate() stops the run if the geometry never becomes canonical.
             pass
         if geometry_ok():
             return
@@ -209,6 +213,7 @@ def focus():
             try:
                 w.activate()
             except Exception:
+                # Activation can fail transiently; the title-bar click and the foreground check below retry it.
                 pass
         pyautogui.click(*TITLEBAR)
         time.sleep(0.2)
@@ -231,6 +236,8 @@ def setup() -> None:
         time.sleep(0.2)
         w.maximize()
     except Exception:
+        # Placement failed: focus() below runs ensure_geometry(), which retries and
+        # escalates if the window never reaches the canonical geometry.
         pass
     time.sleep(0.4)
     focus()
@@ -239,7 +246,6 @@ def setup() -> None:
 # --- Native dialogs ----------------------------------------------------------------------------
 
 def get_dialog(timeout: float = 0.6):
-    from pywinauto import Application
     try:
         app = Application(backend="win32").connect(class_name="#32770", timeout=timeout)
         wnd = app.window(class_name="#32770")
@@ -267,6 +273,7 @@ def dialog_button(dlg, titles) -> bool:
                 b.click_input()
                 return True
         except Exception:
+            # Control vanished or is not clickable: try the next candidate.
             pass
     low = [t.replace("&", "").lower() for t in titles]
     try:
@@ -276,15 +283,16 @@ def dialog_button(dlg, titles) -> bool:
                     c.click_input()
                     return True
             except Exception:
+                # Control vanished or is not clickable: try the next candidate.
                 pass
     except Exception:
+        # The dialog closed while its buttons were enumerated: report "not clicked".
         pass
     return False
 
 
 def message_form():
     """The editor's WinForms message ('MessageForm': save changes?, version mismatch, ...)."""
-    from pywinauto import Application
     try:
         app = Application(backend="win32").connect(title="MessageForm", timeout=0.5)
         w = app.window(title="MessageForm")
@@ -325,6 +333,7 @@ def handle_message_form(prefer, timeout: float = 0.5) -> bool:
                     time.sleep(0.4)
                     return True
             except Exception:
+                # Control vanished or is not clickable: try the next candidate.
                 pass
     key = prefer[0].lower()
     if key in MSGFORM_BTN:
@@ -344,7 +353,6 @@ def dismiss_foreign_popup() -> bool:
     Such system messages appear spontaneously, steal the focus and block the automation.
     Nextion windows and our own #32770/MessageForm dialogs are NOT touched.
     """
-    from pywinauto import Desktop
     main = editor_win()
     main_h = main._hWnd if main else None
     try:
@@ -366,8 +374,10 @@ def dismiss_foreign_popup() -> bool:
                         time.sleep(0.5)
                         return True
                 except Exception:
+                    # Control vanished or is not clickable: try the next candidate.
                     pass
         except Exception:
+            # The foreign window closed while it was inspected: move on to the next window.
             pass
     return False
 
@@ -398,6 +408,7 @@ def clear_popups(rounds: int = 4, save_changes: str = "No") -> bool:
             try:
                 t = d.window_text()
             except Exception:
+                # Dialog closed between lookup and read: keep the empty title and treat it as gone.
                 pass
             if t not in ("Speichern unter", "Save As", "Öffnen", "Open") and _filename_edit(d) is None:
                 # message box (buttons, but no filename edit) -> confirm
@@ -419,7 +430,6 @@ def menu_open() -> bool:
     the File menu (measured: rect ~ (1,63)-(242,439)). The 'MessageForm' drops out because it has
     a title and sits centered.
     """
-    from pywinauto import Desktop
     main = editor_win()
     main_h = main._hWnd if main else None
     try:
@@ -438,6 +448,7 @@ def menu_open() -> bool:
             if r.left < 60 and 50 < r.top < 110 and (r.bottom - r.top) > 250:
                 return True
         except Exception:
+            # Control disappeared while enumerating the window tree: skip it.
             pass
     return False
 
@@ -451,6 +462,7 @@ def cancel_file_dialog() -> bool:
     try:
         t = d.window_text()
     except Exception:
+        # Dialog closed between lookup and read: keep the empty title and treat it as gone.
         pass
     if t in ("Speichern unter", "Save As", "Öffnen", "Open"):
         if not dialog_button(d, ("Abbrechen", "Cancel")):
@@ -486,6 +498,7 @@ def _filename_edit(dlg):
                 if best is None or r.top < best.rectangle().top:
                     best = c
         except Exception:
+            # Control disappeared while enumerating the window tree: skip it.
             pass
     return best
 
@@ -500,6 +513,7 @@ def dismiss_stray_dialogs(max_rounds: int = 4) -> None:
         try:
             txt = d.window_text()
         except Exception:
+            # Dialog closed between lookup and read: keep the empty title and treat it as gone.
             pass
         if txt in ("Speichern unter", "Öffnen", "Open", "Save As"):
             # real file dialog -> cancel
@@ -645,7 +659,6 @@ def _attr_combo():
     (left ~1638) and is excluded via `left < 1600`. The y position is deliberately kept wide,
     because the panel can shift vertically after an editor restart.
     """
-    from pywinauto import Application
     w = editor_win()
     if not w:
         return None
@@ -659,8 +672,10 @@ def _attr_combo():
                     if 1500 < r.left < 1600 and 400 < r.top < 780:
                         return c
             except Exception:
+                # Control disappeared while enumerating the window tree: skip it.
                 pass
     except Exception:
+        # Editor window not reachable right now: fall through to "not found", the caller retries.
         pass
     return None
 
@@ -728,6 +743,7 @@ def select_component(name: str) -> bool:
             if cb2 and (cb2.window_text() or "").startswith(name):
                 return True
         except Exception:
+            # Selection did not stick (combo box redrawn mid-select): retry, up to 3 attempts.
             pass
         time.sleep(0.25)
     return False
@@ -769,7 +785,6 @@ def _cell_editor(dy: int | None = None):
     """
     if dy is None:
         dy = attr_offset()
-    from pywinauto import Application
     w = editor_win()
     if not w:
         return None
@@ -785,8 +800,10 @@ def _cell_editor(dy: int | None = None):
                     if lo < r.top < hi and r.left > 1600:
                         return c
             except Exception:
+                # Control disappeared while enumerating the window tree: skip it.
                 pass
     except Exception:
+        # Editor window not reachable right now: fall through to "not found", the caller retries.
         pass
     return None
 
@@ -893,9 +910,9 @@ def escalate(reason: str) -> None:
     try:
         screenshot(STUCK_PNG)
     except Exception:
+        # Diagnostics are best effort and must never mask the escalation itself.
         pass
     try:
-        from pywinauto import Application
         lines = [f"REASON: {reason}", f"title={title()!r}"]
         w = editor_win()
         if w:
@@ -905,9 +922,11 @@ def escalate(reason: str) -> None:
                     r = c.rectangle()
                     lines.append(f"{c.friendly_class_name():16} {(c.window_text() or '')[:40]!r} ({r.left},{r.top},{r.right},{r.bottom})")
                 except Exception:
+                    # Control disappeared while enumerating the window tree: skip it.
                     pass
         Path(STUCK_TXT).write_text("\n".join(lines), encoding="utf-8")
     except Exception:
+        # Diagnostics are best effort and must never mask the escalation itself.
         pass
     raise EditorStuck(reason)
 

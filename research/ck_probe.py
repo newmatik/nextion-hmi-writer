@@ -52,6 +52,7 @@ def focus():
         try:
             w.activate()
         except Exception:
+            # Best effort and NOT verified: on failure the run continues and relies on the editor still being in front.
             pass
     pyautogui.click(*TITLEBAR)
     time.sleep(0.25)
@@ -86,6 +87,7 @@ def open_file(path: str):
                         clicked = True
                         break
                 except Exception:
+                    # Control vanished or is not clickable: try the next candidate.
                     pass
             if not clicked:
                 pyautogui.press("n")
@@ -177,6 +179,7 @@ def save_as(name: str):
                     clicked = True
                     break
             except Exception:
+                # Control vanished or is not clickable: try the next candidate.
                 pass
         if not clicked:
             pyautogui.click(973, 554)  # 'Ja' (= Yes) button by coordinate

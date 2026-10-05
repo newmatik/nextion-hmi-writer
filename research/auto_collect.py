@@ -83,6 +83,7 @@ def main() -> int:
                     b.click_input()
                     return True
             except Exception:
+                # Control vanished or is not clickable: try the next candidate.
                 pass
         return False
 
@@ -111,6 +112,7 @@ def main() -> int:
             e.set_focus()
             e.set_edit_text(name)
         except Exception:
+            # Best effort: if the name cannot be entered the dialog keeps its default; only the dialog state is checked afterwards, not which file was written.
             pass
         time.sleep(0.15)
         # Click the save button by its caption (more reliable than Enter).
@@ -118,6 +120,7 @@ def main() -> int:
             try:
                 dlg.type_keys("{ENTER}")
             except Exception:
+                # Fallback only: the dialog may already have closed; the caller re-checks for it.
                 pass
         # Confirm a possible overwrite prompt ('Speichern unter' = 'Save as' is the dialog itself).
         time.sleep(0.5)
@@ -127,6 +130,7 @@ def main() -> int:
                 try:
                     conf.type_keys("{ENTER}")
                 except Exception:
+                    # Fallback only: the dialog may already have closed; the caller re-checks for it.
                     pass
         # Bounded wait for it to close (max ~3 s), never hang.
         for _ in range(15):
@@ -154,6 +158,7 @@ def main() -> int:
             try:
                 editor.activate()
             except Exception:
+                # Best effort and NOT verified: on failure the run continues and relies on the editor still being in front.
                 pass
             time.sleep(0.2)
 

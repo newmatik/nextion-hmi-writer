@@ -75,6 +75,7 @@ def main() -> int:
             try:
                 _save(base_txt)
             except Exception:
+                # Sacrificial save: its only job is to flush the previous sample, so a failure here is harmless.
                 pass
     except ec.EditorAborted as e:
         print(f"ABORTED: {e}", flush=True)

@@ -32,7 +32,7 @@ def _click_picture_add() -> None:
     """Clicks the native plus button regardless of relocated dock panels."""
 
     import ctypes
-    from ctypes import wintypes
+    import ctypes.wintypes as wintypes
 
     main = editor.editor_win()
     if main is None:
@@ -64,7 +64,7 @@ def _native_file_dialog_present() -> bool:
     """Checks without pywinauto whether a native file dialog is still open."""
 
     import ctypes
-    from ctypes import wintypes
+    import ctypes.wintypes as wintypes
 
     user32 = ctypes.windll.user32
     found = False

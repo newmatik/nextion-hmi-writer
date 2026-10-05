@@ -85,6 +85,7 @@ def collect(n0: int, n1: int, prefix: str = "zc") -> dict:
             try:
                 ec.reset_to_idle()
             except Exception:
+                # Recovery is best effort; the failure counter above aborts the run if the editor stays broken.
                 pass
         if (i + 1) % 20 == 0:
             print(f"  ... {i + 1}/{len(targets)} saved", flush=True)
@@ -92,6 +93,7 @@ def collect(n0: int, n1: int, prefix: str = "zc") -> dict:
         try:
             _save_one(n1 - 1, prefix + "x")
         except Exception:
+            # Sacrificial save: its only job is to flush the previous sample, so a failure here is harmless.
             pass
     ensure_base()                                  # unlocks all samples
     lens, offs = {}, []
@@ -122,6 +124,7 @@ def collect(n0: int, n1: int, prefix: str = "zc") -> dict:
             try:
                 os.remove(full)
             except OSError:
+                # Already gone or still locked: a leftover file stays for manual cleanup; the run result does not depend on it.
                 pass
     print(f"  valid (longest run): {len(result)}/{len(pending)}  "
           f"N={best[0] if best else '-'}..{best[-1] if best else '-'}", flush=True)
@@ -147,6 +150,7 @@ def main() -> int:
         try:
             os.remove(f)
         except OSError:
+            # Already gone or still locked: a leftover file stays for manual cleanup; the run result does not depend on it.
             pass
     Ns = sorted(res)
     # determine the longest consecutive run

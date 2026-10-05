@@ -103,6 +103,7 @@ def main() -> int:
             try:
                 editor.activate()
             except Exception:
+                # Best effort and NOT verified: on failure the run continues and relies on the editor still being in front.
                 pass
             time.sleep(0.15)
         pyperclip.copy(value)
