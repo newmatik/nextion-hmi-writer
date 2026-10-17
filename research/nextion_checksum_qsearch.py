@@ -170,7 +170,7 @@ def main():
             if not ok:
                 continue
 
-            def Z(L, trans=trans, v_bits=v_bits, D=D):
+            def Z(L, trans=trans, v_bits=v_bits):
                 mm = L - BASE_L
                 t = trans[mm]
                 out = 0

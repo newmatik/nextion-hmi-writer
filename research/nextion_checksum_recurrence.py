@@ -83,10 +83,6 @@ def load_columns(folder: Path, prefix: str) -> tuple[dict[tuple[int, int], int],
     return cols, base_ck, lo, base
 
 
-def matmul_none():  # placeholder to keep flake happy
-    pass
-
-
 def solve(folder: Path, prefix: str):
     cols, base_ck, lo, base = load_columns(folder, prefix)
     positions = sorted({p for p, _ in cols})
