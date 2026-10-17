@@ -23,8 +23,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run the format test vectors
-        run: python -m unittest research.test_vectors -v
+      - name: Run the format test vectors and the binary parser tests
+        run: python -m unittest research.test_vectors research.test_hmi_binary -v
 
   lint:
     # Informational only: a style pass over the tooling. It never blocks a merge.
