@@ -696,14 +696,6 @@ def attr_offset() -> int:
         return 0
 
 
-def attr_combo_text() -> str:
-    cb = _attr_combo()
-    try:
-        return cb.window_text() if cb else ""
-    except Exception:
-        return ""
-
-
 def component_names() -> list:
     """All component names of the current page (from the selection box) — e.g. to see stray components."""
     cb = _attr_combo()
@@ -898,13 +890,7 @@ def page_len(path: str) -> int:
     return r[2] if r else -1
 
 
-# --- Healing / escalation ----------------------------------------------------------------------
-
-def heal(base_path: str) -> None:
-    dismiss_stray_dialogs()
-    focus()
-    open_file(base_path)
-
+# --- Escalation ---------------------------------------------------------------------------------
 
 def escalate(reason: str) -> None:
     try:
