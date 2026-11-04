@@ -503,29 +503,6 @@ def _filename_edit(dlg):
     return best
 
 
-def dismiss_stray_dialogs(max_rounds: int = 4) -> None:
-    """Safely close open non-file dialogs (discard changes: Nein)."""
-    for _ in range(max_rounds):
-        d = get_dialog(0.3)
-        if d is None:
-            return
-        txt = ""
-        try:
-            txt = d.window_text()
-        except Exception:
-            # Dialog closed between lookup and read: keep the empty title and treat it as gone.
-            pass
-        if txt in ("Speichern unter", "Öffnen", "Open", "Save As"):
-            # real file dialog -> cancel
-            if not dialog_button(d, ("Abbrechen", "Cancel")):
-                pyautogui.press("escape")
-        else:
-            # message box: discard changes / confirm
-            if not dialog_button(d, ("&Nein", "Nein", "&No", "No", "OK", "&Ja", "Ja")):
-                pyautogui.press("escape")
-        time.sleep(0.4)
-
-
 # --- Open / save file --------------------------------------------------------------------------
 
 def open_file(path: str) -> None:
