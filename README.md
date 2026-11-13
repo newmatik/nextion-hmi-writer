@@ -54,7 +54,7 @@ The documents above are the reference. Two directories carry the work behind the
   [`research/capture_screenshots.py`](research/capture_screenshots.py) automate the GUI-only steps.
 
 Install and calibration notes are in [`SETUP.md`](SETUP.md). The test suite is stdlib-only:
-`python -m unittest research.test_vectors`.
+`python -m unittest research.test_vectors research.test_hmi_binary`.
 
 ## The shape of an `.HMI` in one picture
 
