@@ -11,11 +11,13 @@ The test suite is **stdlib-only** — no Nextion Editor, no Windows, no `.HMI` f
 repository root:
 
 ```sh
-python -m unittest research.test_vectors
+python -m unittest research.test_vectors research.test_hmi_binary
 ```
 
-It verifies [`research/nextion_hmi_checksum.py`](research/nextion_hmi_checksum.py) against every
-vector in [`test-vectors.md`](test-vectors.md).
+`test_vectors` verifies [`research/nextion_hmi_checksum.py`](research/nextion_hmi_checksum.py) against every
+vector in [`test-vectors.md`](test-vectors.md); `test_hmi_binary` checks the container, page and component
+parsing of [`research/nextion_hmi_binary.py`](research/nextion_hmi_binary.py) on containers built in memory.
+CI runs both.
 [`research/nextion_hmi_binary.py`](research/nextion_hmi_binary.py) is proven separately by its
 byte-exact round-trip, which needs real `.HMI` files (see below). Requires Python 3.10 or newer.
 

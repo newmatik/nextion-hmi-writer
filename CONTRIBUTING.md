@@ -26,7 +26,7 @@ so contributions are held to one standard above all: **a claim is only as good a
   to its byte-exact round-trip against reference `.HMI` files:
 
   ```sh
-  python -m unittest research.test_vectors
+  python -m unittest research.test_vectors research.test_hmi_binary
   ```
 
   The suite parses the vectors out of [`test-vectors.md`](test-vectors.md), so the doc and the code

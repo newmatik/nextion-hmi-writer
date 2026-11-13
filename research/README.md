@@ -43,10 +43,10 @@ copy and this one must be diffed whenever either changes.
 [`../test-vectors.md`](../test-vectors.md) — parsed out of the document itself, so the reference and
 the implementation cannot drift apart. It is stdlib-only and needs no `.HMI` files
 (`nextion_hmi_binary.py` is instead proven by its byte-exact round-trip against reference `.HMI`
-files):
+files, and by `test_hmi_binary.py`, which parses containers, pages and components built in memory):
 
 ```text
-python -m unittest research.test_vectors
+python -m unittest research.test_vectors research.test_hmi_binary
 ```
 
 ## How the checksum fell
