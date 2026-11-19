@@ -12,7 +12,7 @@ jobs:
   test:
     # The test suite is stdlib-only and parses the vectors out of test-vectors.md. It needs no
     # Nextion Editor, no Windows and no .HMI files, so it runs anywhere.
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.LINUX_RUNNER || 'beast' }}
     strategy:
       matrix:
         python-version: ["3.10", "3.12"]
@@ -28,7 +28,7 @@ jobs:
 
   lint:
     # Informational only: a style pass over the tooling. It never blocks a merge.
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.LINUX_RUNNER || 'beast' }}
     continue-on-error: true
     steps:
       - uses: actions/checkout@v7
