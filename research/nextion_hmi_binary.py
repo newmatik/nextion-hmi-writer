@@ -184,7 +184,6 @@ class Component:
 
     records: list[Record]
     trailer: bytes = COMPONENT_TERMINATOR
-    unknown_flag: int = 0
 
     def attribute(self, name: str) -> Attribute | None:
         for record in self.records:
